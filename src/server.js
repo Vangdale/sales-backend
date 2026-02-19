@@ -1,0 +1,80 @@
+import express from "express";
+import cors from "cors";
+import "./db/migrations/init.js";
+
+import {
+    findBySlug,
+    incrementClick,
+    getAllDeals
+} from "./db/deals.repository.js";
+
+import { getOutboundUrl } from "./services/outbound.service.js";
+import { runFetchDeals } from "./jobs/fetchDeals.js";
+
+
+
+
+const app = express();
+
+app.use(cors({
+    origin: process.env.FRONTEND_URL || "*"
+}));
+
+// endpoint para redirigir
+app.get("/r/:slug", (req, res) => {
+    const { slug } = req.params;
+
+    const deal = findBySlug(slug);
+
+    if (!deal) {
+        return res.status(404).send("Deal no encontrado");
+    }
+
+    // registrar click
+    incrementClick(slug);
+
+    // decidir URL final
+    const redirectUrl = getOutboundUrl(deal);
+
+    return res.redirect(302, redirectUrl);
+});
+
+// endpoint para obtener todas las ofertas
+app.get("/api/deals", async (req, res) => {
+    const deals = getAllDeals();
+
+    //formatear los datos y calcular el porcentaje de descuento
+    const formatted = deals.map((deal) => {
+        const discountPercent =
+            deal.original_price && deal.original_price > deal.price
+                ? Math.round(
+                    ((deal.original_price - deal.price) / deal.original_price) * 100
+                ) : 0;
+
+        return {
+            id: deal.id,
+            title: deal.title,
+            price: deal.price,
+            originalPrice: deal.original_price,
+            storeID: deal.store_id,
+            slug: deal.redirect_slug,
+            clicks: deal.clicks,
+            steamAppID: deal.steamAppID,
+            imageUrl: `https://cdn.cloudflare.steamstatic.com/steam/apps/${deal.steamAppID}/header.jpg`,
+            discountPercent,
+        };
+    });
+
+    return res.json(formatted);
+});
+
+app.post("/admin/fetch", async (req, res) => {
+    const result = await runFetchDeals();
+    res.json({ success: result });
+});
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
