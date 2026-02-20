@@ -7,7 +7,14 @@ export async function runFetchDeals() {
     try {
         updateActive();
 
-        const response = await fetch(API_URL);
+        //const response = await fetch(API_URL);
+        const response = await fetch(API_URL, {
+            headers: {
+                "User-Agent": "Mozilla/5.0",
+                "Accept": "application/json"
+            }
+        });
+
 
         if (!response.ok) {
             throw new Error(`Error HTTP: ${response.status}`);

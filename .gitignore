@@ -1,3 +1,6 @@
 node_modules
 deals.db
+deals.db-shm
+deals.db-wal
+*.db
 .env
