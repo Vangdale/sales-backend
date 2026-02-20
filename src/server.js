@@ -10,6 +10,7 @@ import {
 
 import { getOutboundUrl } from "./services/outbound.service.js";
 import { runFetchDeals } from "./jobs/fetchDeals.js";
+import { upsertDeal, updateActive } from "./db/deals.repository.js";
 
 
 
@@ -19,6 +20,8 @@ const app = express();
 app.use(cors({
     origin: process.env.FRONTEND_URL || "*"
 }));
+
+app.use(express.json());
 
 // endpoint para redirigir
 app.get("/r/:slug", (req, res) => {
@@ -73,8 +76,36 @@ app.post("/admin/fetch", async (req, res) => {
     res.json({ success: result });
 });
 
+
+app.post("/admin/import", (req, res) => {
+    try {
+        const deals = req.body;
+
+        if (!Array.isArray(deals)) {
+            return res.status(400).json({ error: "Formato inválido" });
+        }
+
+        // marcar todos como inactivos primero
+        updateActive();
+
+        deals.forEach(upsertDeal);
+
+        return res.json({
+            success: true,
+            imported: deals.length
+        });
+
+    } catch (error) {
+        console.error("Error importando deals:", error);
+        return res.status(500).json({ success: false });
+    }
+});
+
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
+
