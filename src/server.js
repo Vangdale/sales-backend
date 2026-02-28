@@ -43,34 +43,67 @@ app.get("/r/:slug", (req, res) => {
 });
 
 // endpoint para obtener todas las ofertas
+// app.get("/api/deals", async (req, res) => {
+//     const deals = getAllDeals();
+
+//     //formatear los datos y calcular el porcentaje de descuento
+//     const formatted = deals.map((deal) => {
+//         const discountPercent =
+//             deal.original_price && deal.original_price > deal.price
+//                 ? Math.round(
+//                     ((deal.original_price - deal.price) / deal.original_price) * 100
+//                 ) : 0;
+
+//         return {
+//             id: deal.id,
+//             title: deal.title,
+//             price: deal.price,
+//             originalPrice: deal.original_price,
+//             storeID: deal.store_id,
+//             slug: deal.redirect_slug,
+//             clicks: deal.clicks,
+//             steamAppID: deal.steamAppID,
+//             imageUrl: `https://cdn.cloudflare.steamstatic.com/steam/apps/${deal.steamAppID}/header.jpg`,
+//             discountPercent,
+//         };
+//     });
+
+//     return res.json(formatted);
+// });
+
 app.get("/api/deals", async (req, res) => {
-    const deals = getAllDeals();
+    const { maxPrice, minDiscount, sort } = req.query;
 
-    //formatear los datos y calcular el porcentaje de descuento
-    const formatted = deals.map((deal) => {
-        const discountPercent =
-            deal.original_price && deal.original_price > deal.price
-                ? Math.round(
-                    ((deal.original_price - deal.price) / deal.original_price) * 100
-                ) : 0;
+    let deals = getAllDeals();
 
-        return {
-            id: deal.id,
-            title: deal.title,
-            price: deal.price,
-            originalPrice: deal.original_price,
-            storeID: deal.store_id,
-            slug: deal.redirect_slug,
-            clicks: deal.clicks,
-            steamAppID: deal.steamAppID,
-            imageUrl: `https://cdn.cloudflare.steamstatic.com/steam/apps/${deal.steamAppID}/header.jpg`,
-            discountPercent,
-        };
-    });
+    // Filtrar por precio máximo
+    if (maxPrice) {
+        deals = deals.filter(d => d.price <= Number(maxPrice));
+    }
 
-    return res.json(formatted);
+    // Filtrar por descuento mínimo
+    if (minDiscount) {
+        deals = deals.filter(d => {
+            if (!d.original_price || d.original_price <= d.price) return false;
+            const discount = ((d.original_price - d.price) / d.original_price) * 100;
+            return discount >= Number(minDiscount);
+        });
+    }
+
+    // Ordenar
+    if (sort === "discount") {
+        deals.sort((a, b) => {
+            const discA = a.original_price ? (a.original_price - a.price) / a.original_price : 0;
+            const discB = b.original_price ? (b.original_price - b.price) / b.original_price : 0;
+            return discB - discA;
+        });
+    }
+
+    return res.json(deals);
 });
 
+
+//este endpoint hace que se bloquee la ip de momento, usar cuando no haya bloqueo de ip, mientras tanto usar /admin/import para importar los deals con proxy en ip local
 app.post("/admin/fetch", async (req, res) => {
     const result = await runFetchDeals();
     res.json({ success: result });
