@@ -42,38 +42,9 @@ app.get("/r/:slug", (req, res) => {
     return res.redirect(302, redirectUrl);
 });
 
-// endpoint para obtener todas las ofertas
-// app.get("/api/deals", async (req, res) => {
-//     const deals = getAllDeals();
-
-//     //formatear los datos y calcular el porcentaje de descuento
-//     const formatted = deals.map((deal) => {
-//         const discountPercent =
-//             deal.original_price && deal.original_price > deal.price
-//                 ? Math.round(
-//                     ((deal.original_price - deal.price) / deal.original_price) * 100
-//                 ) : 0;
-
-//         return {
-//             id: deal.id,
-//             title: deal.title,
-//             price: deal.price,
-//             originalPrice: deal.original_price,
-//             storeID: deal.store_id,
-//             slug: deal.redirect_slug,
-//             clicks: deal.clicks,
-//             steamAppID: deal.steamAppID,
-//             imageUrl: `https://cdn.cloudflare.steamstatic.com/steam/apps/${deal.steamAppID}/header.jpg`,
-//             discountPercent,
-//         };
-//     });
-
-//     return res.json(formatted);
-// });
-
+//endpoint para obtener todas las ofertas
 app.get("/api/deals", async (req, res) => {
     const { maxPrice, minDiscount, sort } = req.query;
-
     let deals = getAllDeals();
 
     // Filtrar por precio máximo
@@ -99,8 +70,31 @@ app.get("/api/deals", async (req, res) => {
         });
     }
 
-    return res.json(deals);
+    //formatear los datos y calcular el porcentaje de descuento
+    const formatted = deals.map((deal) => {
+        const discountPercent =
+            deal.original_price && deal.original_price > deal.price
+                ? Math.round(
+                    ((deal.original_price - deal.price) / deal.original_price) * 100
+                ) : 0;
+
+        return {
+            id: deal.id,
+            title: deal.title,
+            price: deal.price,
+            originalPrice: deal.original_price,
+            storeID: deal.store_id,
+            slug: deal.redirect_slug,
+            clicks: deal.clicks,
+            steamAppID: deal.steamAppID,
+            imageUrl: `https://cdn.cloudflare.steamstatic.com/steam/apps/${deal.steamAppID}/header.jpg`,
+            discountPercent,
+        };
+    });
+
+    return res.json(formatted);
 });
+
 
 
 //este endpoint hace que se bloquee la ip de momento, usar cuando no haya bloqueo de ip, mientras tanto usar /admin/import para importar los deals con proxy en ip local
