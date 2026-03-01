@@ -77,7 +77,7 @@ export function upsertDeal(deal) {
 
 
 export function getAllDeals() {
-    return db.prepare("SELECT * FROM deals WHERE is_active = 1 order by title asc").all();
+    return db.prepare("SELECT * FROM deals WHERE is_active = 1 ORDER BY title asc").all();
 }
 
 export function findBySlug(slug) {
