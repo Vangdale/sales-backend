@@ -50,14 +50,16 @@ export function upsertDeal(deal) {
             steamAppID,
             redirect_slug,
             dealRating,
-            created_at
+            created_at,
+            is_active
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
         ON CONFLICT(id) DO UPDATE SET
             price = excluded.price,
             original_price = excluded.original_price,
             dealRating = excluded.dealRating,
-            title = excluded.title
+            title = excluded.title,
+            is_active = excluded.is_active
     `);
 
     stmt.run(
@@ -71,7 +73,8 @@ export function upsertDeal(deal) {
         deal.steamAppID,
         deal.redirectSlug,
         deal.dealRating,
-        deal.createdAt
+        deal.createdAt,
+        deal.isActive ? 1 : 1
     );
 }
 
