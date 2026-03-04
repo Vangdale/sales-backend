@@ -54,7 +54,7 @@ export function upsertDeal(deal) {
             created_at,
             is_active
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(id) DO UPDATE SET
             price = excluded.price,
             original_price = excluded.original_price,
