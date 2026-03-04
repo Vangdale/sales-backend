@@ -50,6 +50,7 @@ export function upsertDeal(deal) {
             steamAppID,
             redirect_slug,
             dealRating,
+            metacriticScore,
             created_at,
             is_active
         )
@@ -59,7 +60,10 @@ export function upsertDeal(deal) {
             original_price = excluded.original_price,
             dealRating = excluded.dealRating,
             title = excluded.title,
-            is_active = excluded.is_active
+            is_active = excluded.is_active,
+            dealRating = excluded.dealRating,
+            metacriticScore = excluded.metacriticScore,
+            created_at = excluded.created_at
     `);
 
     stmt.run(
@@ -73,6 +77,7 @@ export function upsertDeal(deal) {
         deal.steamAppID,
         deal.redirectSlug,
         deal.dealRating,
+        deal.metacriticScore,
         deal.createdAt,
         deal.isActive ? 1 : 1
     );
@@ -103,4 +108,8 @@ export function incrementClick(slug) {
 
 export function updateActive(){
     return db.prepare("UPDATE deals SET is_active = 0 WHERE is_active = 1").run();
+}
+
+export function getDealByDealRating() {       
+    return db.prepare("SELECT * FROM deals WHERE is_active = 1 AND metacriticScore IS NOT NULL ORDER BY metacriticScore DESC LIMIT 6").all();     
 }

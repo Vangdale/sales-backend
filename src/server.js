@@ -5,14 +5,15 @@ import "./db/migrations/init.js";
 import {
     findBySlug,
     incrementClick,
-    getAllDeals
+    getAllDeals,
+    upsertDeal,
+    updateActive,
+    getDealByDealRating
 } from "./db/deals.repository.js";
 
 import { getOutboundUrl } from "./services/outbound.service.js";
 import { runFetchDeals } from "./jobs/fetchDeals.js";
-import { upsertDeal, updateActive } from "./db/deals.repository.js";
-
-
+import { formatDeal } from "./services/dealFormatter.js";
 
 
 const app = express();
@@ -71,26 +72,7 @@ app.get("/api/deals", async (req, res) => {
     }
 
     //formatear los datos y calcular el porcentaje de descuento
-    const formatted = deals.map((deal) => {
-        const discountPercent =
-            deal.original_price && deal.original_price > deal.price
-                ? Math.round(
-                    ((deal.original_price - deal.price) / deal.original_price) * 100
-                ) : 0;
-
-        return {
-            id: deal.id,
-            title: deal.title,
-            price: deal.price,
-            originalPrice: deal.original_price,
-            storeID: deal.store_id,
-            slug: deal.redirect_slug,
-            clicks: deal.clicks,
-            steamAppID: deal.steamAppID,
-            imageUrl: `https://cdn.cloudflare.steamstatic.com/steam/apps/${deal.steamAppID}/header.jpg`,
-            discountPercent,
-        };
-    });
+    const formatted = deals.map(formatDeal);
 
     return res.json(formatted);
 });
@@ -126,6 +108,19 @@ app.post("/admin/import", (req, res) => {
         console.error("Error importando deals:", error);
         return res.status(500).json({ success: false });
     }
+});
+
+
+app.get("/api/home", (req, res) => {
+    
+    const deals = getDealByDealRating();
+
+    const topMetacritic = deals.map(formatDeal);
+
+    return res.json({
+        topMetacritic
+    });
+
 });
 
 
