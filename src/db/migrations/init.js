@@ -20,7 +20,7 @@ db.exec(`
         affiliate_url TEXT,
 
         dealRating REAL,
-        metacriticScore INTEGER
+        metacriticScore INTEGER,
 
         clicks INTEGER DEFAULT 0,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
