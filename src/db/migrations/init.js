@@ -25,6 +25,8 @@ db.exec(`
         clicks INTEGER DEFAULT 0,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
 
+        img_url TEXT,
+
         is_active INTEGER DEFAULT 1
     );
 `);

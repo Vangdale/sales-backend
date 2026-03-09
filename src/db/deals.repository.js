@@ -52,9 +52,10 @@ export function upsertDeal(deal) {
             dealRating,
             metacriticScore,
             created_at,
-            is_active
+            is_active,
+            img_url
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(id) DO UPDATE SET
             price = excluded.price,
             original_price = excluded.original_price,
@@ -63,7 +64,8 @@ export function upsertDeal(deal) {
             is_active = excluded.is_active,
             dealRating = excluded.dealRating,
             metacriticScore = excluded.metacriticScore,
-            created_at = excluded.created_at
+            created_at = excluded.created_at,
+            img_url = excluded.img_url
     `);
 
     stmt.run(
@@ -79,7 +81,8 @@ export function upsertDeal(deal) {
         deal.dealRating,
         deal.metacriticScore,
         deal.createdAt,
-        deal.isActive ? 1 : 1
+        deal.isActive ? 1 : 1,
+        deal.imgUrl
     );
 }
 
