@@ -45,36 +45,17 @@ app.get("/r/:slug", (req, res) => {
 
 //endpoint para obtener todas las ofertas
 app.get("/api/deals", async (req, res) => {
-    const { maxPrice, minDiscount, sort } = req.query;
     let deals = getAllDeals();
 
-    // Filtrar por precio máximo
-    if (maxPrice) {
-        deals = deals.filter(d => d.price <= Number(maxPrice));
+    if (req.query.maxPrice) {
+        deals = deals.filter(d => d.price <= Number(req.query.maxPrice));
     }
 
-    // Filtrar por descuento mínimo
-    if (minDiscount) {
-        deals = deals.filter(d => {
-            if (!d.original_price || d.original_price <= d.price) return false;
-            const discount = ((d.original_price - d.price) / d.original_price) * 100;
-            return discount >= Number(minDiscount);
-        });
+    if (req.query.minDiscount) {
+        deals = deals.filter(d => d.discountPercent >= Number(req.query.minDiscount));
     }
 
-    // Ordenar
-    if (sort === "discount") {
-        deals.sort((a, b) => {
-            const discA = a.original_price ? (a.original_price - a.price) / a.original_price : 0;
-            const discB = b.original_price ? (b.original_price - b.price) / b.original_price : 0;
-            return discB - discA;
-        });
-    }
-
-    //formatear los datos y calcular el porcentaje de descuento
-    const formatted = deals.map(formatDeal);
-
-    return res.json(formatted);
+    res.json(deals);
 });
 
 
@@ -97,7 +78,16 @@ app.post("/admin/import", (req, res) => {
         // marcar todos como inactivos primero
         updateActive();
 
-        deals.forEach(upsertDeal);
+        // deals.forEach(upsertDeal);
+
+        for (const item of deals) {
+            const gameId = upsertGame(item.game);
+
+            upsertDeal({
+                ...item.deal,
+                game_id: gameId
+            });
+        }
 
         return res.json({
             success: true,
