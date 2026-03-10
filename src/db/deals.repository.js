@@ -98,6 +98,9 @@ export function getAllDeals() {
             d.id,
             d.price,
             d.original_price,
+            ROUND(
+            (d.original_price - d.price) * 100.0 / d.original_price
+            ) AS discountPercent,
             d.store_id,
             d.redirect_slug,
             d.clicks,
@@ -109,8 +112,8 @@ export function getAllDeals() {
 
         FROM deals d
         JOIN games g ON g.id = d.game_id
-        WHERE d.is_active = 1`
-    ).all();
+        WHERE d.is_active = 1
+    `).all();
 }
 
 export function findBySlug(slug) {
