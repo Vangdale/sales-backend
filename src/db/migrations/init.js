@@ -14,14 +14,16 @@ db.exec(`
 
 db.exec(`
     CREATE TABLE deals (
-        id UUID PRIMARY KEY,
-        game_id UUID REFERENCES games(id),
-        store_id INTEGER,
-        price NUMERIC,
-        original_price NUMERIC,
+        id TEXT PRIMARY KEY,
+        game_id TEXT NOT NULL,
+        store_id TEXT,
+        price REAL,
+        original_price REAL,
         redirect_slug TEXT UNIQUE,
-        is_active BOOLEAN DEFAULT true,
         clicks INTEGER DEFAULT 0,
-        last_seen TEXT DEFAULT CURRENT_TIMESTAMP
-    );
+        is_active INTEGER DEFAULT 1,
+        last_seen TEXT
+);
 `);
+
+db.exec("CREATE INDEX idx_redirect_slug ON deals(redirect_slug);");
