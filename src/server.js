@@ -7,6 +7,7 @@ import {
     incrementClick,
     getAllDeals,
     upsertDeal,
+    upsertGame,
     updateActive,
     getDealByDealRating
 } from "./db/deals.repository.js";
