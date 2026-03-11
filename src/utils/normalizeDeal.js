@@ -54,7 +54,7 @@ export function normalizeDeal(raw) {
     const deal = {
         storeID: Number(raw.storeID),
         price: Number(raw.salePrice),
-        originalPrice: Number(raw.normalPrice),
+        original_price: Number(raw.normalPrice),
         redirectSlug: randomUUID(),
         is_active: 1,
     };
