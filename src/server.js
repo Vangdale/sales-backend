@@ -26,17 +26,17 @@ app.use(cors({
 app.use(express.json());
 
 // endpoint para redirigir
-app.get("/r/:slug", (req, res) => {
-    const { slug } = req.params;
+app.get("/r/:redirect_slug", (req, res) => {
+    const { redirect_slug } = req.params;
 
-    const deal = findBySlug(slug);
+    const deal = findBySlug(redirect_slug);
 
     if (!deal) {
         return res.status(404).send("Deal no encontrado");
     }
 
     // registrar click
-    incrementClick(slug);
+    incrementClick(redirect_slug);
 
     // decidir URL final
     const redirectUrl = getOutboundUrl(deal);

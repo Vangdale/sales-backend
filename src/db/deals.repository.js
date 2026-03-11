@@ -57,11 +57,13 @@ export function getAllDeals() {
             d.store_id,
             d.redirect_slug,
             d.clicks,
+            d.is_active,
 
             g.title,
             g.metacriticScore,
             g.imageUrl,
-            g.steamAppID
+            g.steamAppID,
+            g.slug
 
         FROM deals d
         JOIN games g ON g.id = d.game_id
@@ -69,10 +71,10 @@ export function getAllDeals() {
     `).all();
 }
 
-export function findBySlug(slug) {
+export function findBySlug(redirect_slug) {
     return db
         .prepare("SELECT * FROM deals WHERE redirect_slug = ?")
-        .get(slug);
+        .get(redirect_slug);
 }
 
 export function updateAffiliateUrl(id, url) {

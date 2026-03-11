@@ -52,10 +52,10 @@ export function normalizeDeal(raw) {
     };
 
     const deal = {
-        storeID: Number(raw.storeID),
+        store_id: Number(raw.storeID),
         price: Number(raw.salePrice),
         original_price: Number(raw.normalPrice),
-        redirectSlug: randomUUID(),
+        redirect_slug: randomUUID(),
         is_active: 1,
     };
 
