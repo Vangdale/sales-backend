@@ -30,8 +30,6 @@ export function upsertGame(game) {
 
 export function upsertDeal(deal) {
 
-    console.log("INSERTANDO DEAL:", deal);
-
     db.prepare(`
         INSERT INTO deals
         (id,game_id,store_id,price,original_price,redirect_slug,is_active,last_seen)
