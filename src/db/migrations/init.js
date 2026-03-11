@@ -39,7 +39,7 @@ db.exec(`
         steamAppID INTEGER,
         metacriticScore INTEGER,
         imageUrl TEXT,
-        created_at TIMESTAMP DEFAULT NOW()
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
 `);
 
@@ -53,6 +53,6 @@ db.exec(`
         redirect_slug TEXT UNIQUE,
         is_active BOOLEAN DEFAULT true,
         clicks INTEGER DEFAULT 0,
-        last_seen TIMESTAMP DEFAULT NOW()
+        last_seen TEXT DEFAULT CURRENT_TIMESTAMP
     );
 `);
