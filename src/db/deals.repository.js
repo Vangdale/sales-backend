@@ -104,6 +104,6 @@ export function updateActive() {
     return db.prepare("UPDATE deals SET is_active = 0 WHERE is_active = 1").run();
 }
 
-// export function getDealByDealRating() {
-//     return db.prepare("SELECT * FROM deals WHERE is_active = 1 AND metacriticScore IS NOT NULL ORDER BY metacriticScore DESC LIMIT 6").all();
-// }
+export function getDealByDealRating() {
+    return db.prepare("SELECT * FROM deals WHERE is_active = 1 AND metacriticScore IS NOT NULL ORDER BY metacriticScore DESC LIMIT 6").all();
+}
