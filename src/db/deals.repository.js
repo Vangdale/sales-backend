@@ -1,53 +1,6 @@
 import db from "./index.js";
+import { randomUUID } from "crypto";
 
-// export function upsertDeal(deal) {
-//     const stmt = db.prepare(`
-//         INSERT INTO deals (
-//             id,
-//             deal_id,
-//             title,
-//             price,
-//             original_price,
-//             store_id,
-//             store_key,
-//             steamAppID,
-//             redirect_slug,
-//             dealRating,
-//             metacriticScore,
-//             created_at,
-//             is_active,
-//             img_url
-//         )
-//         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-//         ON CONFLICT(id) DO UPDATE SET
-//             price = excluded.price,
-//             original_price = excluded.original_price,
-//             dealRating = excluded.dealRating,
-//             title = excluded.title,
-//             is_active = excluded.is_active,
-//             dealRating = excluded.dealRating,
-//             metacriticScore = excluded.metacriticScore,
-//             created_at = excluded.created_at,
-//             img_url = excluded.img_url
-//     `);
-
-//     stmt.run(
-//         deal.id,
-//         deal.dealId,
-//         deal.title,
-//         deal.price,
-//         deal.originalPrice,
-//         deal.storeID,
-//         deal.storeKey,
-//         deal.steamAppID,
-//         deal.redirectSlug,
-//         deal.dealRating,
-//         deal.metacriticScore,
-//         deal.createdAt,
-//         deal.isActive ? 1 : 1,
-//         deal.imgUrl
-//     );
-// }
 export function upsertGame(game) {
 
     const existing = db.prepare(`
