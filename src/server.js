@@ -115,6 +115,12 @@ app.get("/api/home", (req, res) => {
 });
 
 
+//debug
+app.get("/debug/deals", (req, res) => {
+    const rows = db.prepare("SELECT * FROM deals LIMIT 50").all();
+    res.json(rows);
+});
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {

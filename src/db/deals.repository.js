@@ -105,5 +105,26 @@ export function updateActive() {
 }
 
 export function getDealByDealRating() {
-    return db.prepare("SELECT * FROM deals WHERE is_active = 1 AND metacriticScore IS NOT NULL ORDER BY metacriticScore DESC LIMIT 6").all();
+    return db.prepare(`
+        SELECT
+            d.id,
+            d.price,
+            d.original_price,
+            d.redirect_slug,
+            d.clicks,
+
+            g.title,
+            g.metacriticScore,
+            g.imageUrl,
+            g.steamAppID
+
+        FROM deals d
+        JOIN games g ON g.id = d.game_id
+
+        WHERE d.is_active = 1
+        AND g.metacriticScore IS NOT NULL
+
+        ORDER BY g.metacriticScore DESC
+        LIMIT 6
+    `).all();
 }
