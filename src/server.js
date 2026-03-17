@@ -9,7 +9,8 @@ import {
     upsertDeal,
     upsertGame,
     updateActive,
-    getDealByDealRating
+    getDealByDealRating,
+    debug
 } from "./db/deals.repository.js";
 
 import { getOutboundUrl } from "./services/outbound.service.js";
@@ -117,7 +118,7 @@ app.get("/api/home", (req, res) => {
 
 //debug
 app.get("/debug/deals", (req, res) => {
-    const rows = db.prepare("SELECT * FROM deals LIMIT 50").all();
+    const rows = debug();
     res.json(rows);
 });
 

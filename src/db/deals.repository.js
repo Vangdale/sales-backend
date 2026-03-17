@@ -128,3 +128,9 @@ export function getDealByDealRating() {
         LIMIT 6
     `).all();
 }
+
+export function debug() {
+    return db
+        .prepare("SELECT * FROM deals LIMIT 50")
+        .all();
+}
