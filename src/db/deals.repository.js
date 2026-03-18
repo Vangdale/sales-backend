@@ -45,7 +45,7 @@ export function upsertDeal(deal) {
             is_active = 1,
             last_seen = CURRENT_TIMESTAMP
     `).run(
-        deal.dealID,
+        deal.id,
         deal.game_id,
         deal.store_id,
         deal.price,
