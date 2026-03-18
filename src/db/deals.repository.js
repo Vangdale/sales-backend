@@ -45,7 +45,7 @@ export function upsertDeal(deal) {
             is_active = 1,
             last_seen = CURRENT_TIMESTAMP
     `).run(
-        randomUUID(),
+        deal.dealID,
         deal.game_id,
         deal.store_id,
         deal.price,
