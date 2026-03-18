@@ -107,11 +107,9 @@ app.get("/api/home", (req, res) => {
     
     const deals = getDealByDealRating();
 
-    const topMetacritic = deals.map(formatDeal);
+    //const topMetacritic = deals.map(formatDeal);
 
-    return res.json({
-        topMetacritic
-    });
+    res.json(deals);
 
 });
 

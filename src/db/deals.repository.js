@@ -24,9 +24,10 @@ export function upsertGame(game) {
         game.imageUrl
     );
 
-    return db.prepare(`
-        SELECT id FROM games WHERE slug = ?
-    `).get(game.slug).id;
+    // return db.prepare(`
+    //     SELECT id FROM games WHERE slug = ?
+    // `).get(game.slug).id;
+    return id;
 }
 
 export function upsertDeal(deal) {
