@@ -3,11 +3,9 @@ import { randomUUID } from "crypto";
 
 export function upsertGame(game) {
 
-    const id = randomUUID();
-
     db.prepare(`
-        INSERT INTO games (id,title,slug,steamAppID,metacriticScore,imageUrl)
-        VALUES (?,?,?,?,?,?)
+        INSERT INTO games (id,title,slug,steamAppID,metacriticScore,imageUrl,created_at)
+        VALUES (?,?,?,?,?,?,?)
 
         ON CONFLICT(slug)
         DO UPDATE SET
@@ -16,18 +14,14 @@ export function upsertGame(game) {
             metacriticScore = excluded.metacriticScore,
             imageUrl = excluded.imageUrl
     `).run(
-        id,
+        game.id,
         game.title,
         game.slug,
         game.steamAppID,
         game.metacriticScore,
-        game.imageUrl
+        game.imageUrl,
+        game.created_at
     );
-
-    // return db.prepare(`
-    //     SELECT id FROM games WHERE slug = ?
-    // `).get(game.slug).id;
-    return id;
 }
 
 export function upsertDeal(deal) {

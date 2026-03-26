@@ -2,7 +2,7 @@ import db from "../index.js";
 
 db.exec(`
     CREATE TABLE IF NOT EXISTS games (
-        id UUID PRIMARY KEY,
+        id TEXT PRIMARY KEY,
         title TEXT NOT NULL,
         slug TEXT UNIQUE,
         steamAppID INTEGER,
@@ -13,10 +13,10 @@ db.exec(`
 `);
 
 db.exec(`
-    CREATE TABLE deals (
+    CREATE TABLE IF NOT EXISTS deals (
         id TEXT PRIMARY KEY,
         game_id TEXT NOT NULL,
-        store_id TEXT,
+        store_id INTEGER,
         price REAL,
         original_price REAL,
         redirect_slug TEXT UNIQUE,
@@ -26,4 +26,4 @@ db.exec(`
 );
 `);
 
-db.exec("CREATE INDEX idx_redirect_slug ON deals(redirect_slug);");
+db.exec("CREATE INDEX IF NOT EXISTS idx_redirect_slug ON deals(redirect_slug);");

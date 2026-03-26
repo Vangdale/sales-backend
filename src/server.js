@@ -24,7 +24,7 @@ app.use(cors({
     origin: process.env.FRONTEND_URL || "*"
 }));
 
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 
 // endpoint para redirigir
 app.get("/r/:redirect_slug", (req, res) => {
@@ -57,6 +57,10 @@ app.get("/api/deals", async (req, res) => {
         deals = deals.filter(d => d.discountPercent >= Number(req.query.minDiscount));
     }
 
+    if (req.query.store) {
+        deals = deals.filter(d => d.store_id === Number(req.query.store));
+    }
+
     res.json(deals);
 });
 
@@ -83,11 +87,10 @@ app.post("/admin/import", (req, res) => {
         // deals.forEach(upsertDeal);
 
         for (const item of deals) {
-            const gameId = upsertGame(item.game);
+            upsertGame(item.game);
 
             upsertDeal({
-                ...item.deal,
-                game_id: gameId
+                ...item.deal
             });
         }
 
