@@ -26,4 +26,5 @@ db.exec(`
 );
 `);
 
-db.exec("CREATE INDEX IF NOT EXISTS idx_redirect_slug ON deals(redirect_slug);");
+db.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_game_store ON deals(game_id, store_id);");
+

@@ -3,16 +3,19 @@ import { randomUUID } from "crypto";
 
 export function upsertGame(game) {
 
+    const existing = db.prepare(`
+        SELECT id FROM games WHERE id = ?
+    `).get(game.id);
+
+    if (existing) {
+        return existing.id;
+    }
+
+    const id = game.id;
+
     db.prepare(`
         INSERT INTO games (id,title,slug,steamAppID,metacriticScore,imageUrl,created_at)
         VALUES (?,?,?,?,?,?,?)
-
-        ON CONFLICT(slug)
-        DO UPDATE SET
-            title = excluded.title,
-            steamAppID = excluded.steamAppID,
-            metacriticScore = excluded.metacriticScore,
-            imageUrl = excluded.imageUrl
     `).run(
         game.id,
         game.title,
@@ -22,23 +25,25 @@ export function upsertGame(game) {
         game.imageUrl,
         game.created_at
     );
+
+    return id;
 }
 
 export function upsertDeal(deal) {
 
     db.prepare(`
         INSERT INTO deals
-        (id,game_id,store_id,price,original_price,redirect_slug,is_active,last_seen)
-        VALUES (?,?,?,?,?,?,1,CURRENT_TIMESTAMP)
+        (id,game_id, store_id, price, original_price, redirect_slug, is_active, last_seen)
+        VALUES (?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP)
 
-        ON CONFLICT(redirect_slug)
+        ON CONFLICT(id)
         DO UPDATE SET
             price = excluded.price,
             original_price = excluded.original_price,
-            store_id = excluded.store_id,
-            game_id = excluded.game_id,
+            redirect_slug = excluded.redirect_slug,
             is_active = 1,
             last_seen = CURRENT_TIMESTAMP
+            
     `).run(
         deal.id,
         deal.game_id,

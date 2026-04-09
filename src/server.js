@@ -72,6 +72,10 @@ app.post("/admin/fetch", async (req, res) => {
     res.json({ success: result });
 });
 
+app.post("/admin/reset-active", (req, res) => {
+    updateActive();
+    res.json({ success: true });
+});
 
 app.post("/admin/import", (req, res) => {
     try {
@@ -81,16 +85,12 @@ app.post("/admin/import", (req, res) => {
             return res.status(400).json({ error: "Formato inválido" });
         }
 
-        // marcar todos como inactivos primero
-        updateActive();
-
-        // deals.forEach(upsertDeal);
-
         for (const item of deals) {
-            upsertGame(item.game);
+            const id = upsertGame(item.game);
 
             upsertDeal({
-                ...item.deal
+                ...item.deal,
+                game_id: id
             });
         }
 
