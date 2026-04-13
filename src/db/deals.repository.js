@@ -123,9 +123,14 @@ export function getDealByDealRating() {
 
         WHERE d.is_active = 1
         AND g.metacriticScore IS NOT NULL
+        AND (CASE
+                WHEN d.original_price > 0
+                THEN ROUND((d.original_price - d.price) * 100.0 / d.original_price)
+                ELSE 0
+            END) > 80
 
         ORDER BY g.metacriticScore DESC
-        LIMIT 6
+        LIMIT 10
     `).all();
 }
 
